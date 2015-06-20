@@ -494,7 +494,10 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
   console.log("Average time to generate last 10 frames: " + sum / 10 + "ms");
 }
 
-
+// fetch all the elements loaded with initial DOM load by name of mover class
+// this array does not change and we can just evaluate it once
+// the contents of each item in the array are manipulated
+// to update the location of the pizza as the user scrolls
 var items = document.getElementsByClassName('mover');
 // The following code for sliding background pizzas was pulled from Ilya's demo found at:
 // https://www.igvita.com/slides/2012/devtools-tips-and-tricks/jank-demo.html
@@ -504,18 +507,18 @@ function updatePositions() {
   frame++;
   window.performance.mark("mark_start_frame");
 
+  // a counter to keep steady for 5 values
   var k = 0;
   var currentScrollTop = document.body.scrollTop / 1250;
-  // there are only 5 phases for the sine curve
+  // there are only 5 phases we care about in the sine curve
   // they can be calculated outside the for loop since their values are constant per scroll
   // and don't need to be evaluated over and again for each loop
   var phases = [Math.sin(currentScrollTop + 0), Math.sin(currentScrollTop + 1),
                   Math.sin(currentScrollTop + 2), Math.sin(currentScrollTop + 3),
                   Math.sin(currentScrollTop + 4)];
   for (var i = 0; i < items.length; i++) {
-      //var phase = Math.sin(currentScrollTop + k);
       var move = (items[i].basicLeft + 100 * phases[k]) - window.innerWidth/2;
-      items[i].style.transform = 'translateX(' + move + 'px)' ;
+      items[i].style.transform = 'translateX(' + move + 'px)';
     if (k === 4) {
       k = 0;
     } else {
@@ -541,9 +544,9 @@ window.addEventListener('scroll', updatePositions);
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
-  // 22 background pizzas seem okay to fill the screen on a desktop
+  // 22 background pizzas seem visually okay to fill the screen on a desktop
   // and thus should be sufficient for smaller screen sizes
-  // hence capping the number of children generated at hard coded 22
+  // hence capping the number of children generated at hard coded value of 22
   for (var i = 0; i < 22; i++) {
     var elem = document.createElement('img');
     elem.className = 'mover';
