@@ -304,28 +304,28 @@ function randomName() {
 
 // These functions return a string of a random ingredient from each respective category of ingredients.
 var selectRandomMeat = function() {
-  var randomMeat = pizzaIngredients.meats[Math.floor((Math.random() * pizzaIngredients.meats.length))];
-  return randomMeat;
+  //var randomMeat = pizzaIngredients.meats[Math.floor((Math.random() * pizzaIngredients.meats.length))];
+  return pizzaIngredients.meats[Math.floor((Math.random() * pizzaIngredients.meats.length))];
 };
 
 var selectRandomNonMeat = function() {
-  var randomNonMeat = pizzaIngredients.nonMeats[Math.floor((Math.random() * pizzaIngredients.nonMeats.length))];
-  return randomNonMeat;
+  //var randomNonMeat = pizzaIngredients.nonMeats[Math.floor((Math.random() * pizzaIngredients.nonMeats.length))];
+  return pizzaIngredients.nonMeats[Math.floor((Math.random() * pizzaIngredients.nonMeats.length))];
 };
 
 var selectRandomCheese = function() {
-  var randomCheese = pizzaIngredients.cheeses[Math.floor((Math.random() * pizzaIngredients.cheeses.length))];
-  return randomCheese;
+  //var randomCheese = pizzaIngredients.cheeses[Math.floor((Math.random() * pizzaIngredients.cheeses.length))];
+  return pizzaIngredients.cheeses[Math.floor((Math.random() * pizzaIngredients.cheeses.length))];
 };
 
 var selectRandomSauce = function() {
-  var randomSauce = pizzaIngredients.sauces[Math.floor((Math.random() * pizzaIngredients.sauces.length))];
-  return randomSauce;
+  //var randomSauce = pizzaIngredients.sauces[Math.floor((Math.random() * pizzaIngredients.sauces.length))];
+  return pizzaIngredients.sauces[Math.floor((Math.random() * pizzaIngredients.sauces.length))];
 };
 
 var selectRandomCrust = function() {
-  var randomCrust = pizzaIngredients.crusts[Math.floor((Math.random() * pizzaIngredients.crusts.length))];
-  return randomCrust;
+  //var randomCrust = pizzaIngredients.crusts[Math.floor((Math.random() * pizzaIngredients.crusts.length))];
+  return pizzaIngredients.crusts[Math.floor((Math.random() * pizzaIngredients.crusts.length))];
 };
 
 var ingredientItemizer = function(string) {
@@ -494,6 +494,8 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
   console.log("Average time to generate last 10 frames: " + sum / 10 + "ms");
 }
 
+
+var items = document.getElementsByClassName('mover');
 // The following code for sliding background pizzas was pulled from Ilya's demo found at:
 // https://www.igvita.com/slides/2012/devtools-tips-and-tricks/jank-demo.html
 
@@ -502,16 +504,17 @@ function updatePositions() {
   frame++;
   window.performance.mark("mark_start_frame");
 
-  //var items = document.querySelectorAll('.mover');
   var k = 0;
-  var items = document.getElementsByClassName('mover');
-  // 25 background pizzas seem okay to fill the screen
-  for (var i = 0; i < 22; i++) {
-      //console.log("modVal = " + (i % 5) + "k = " + k + " j = " + j);
-      var phase = Math.sin((document.body.scrollTop / 1250) + k);
-      //items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
-      //console.log("basicLeft = " + items[i].basicLeft);
-      var move = (items[i].basicLeft + 100 * phase) - window.innerWidth/2;
+  var currentScrollTop = document.body.scrollTop / 1250;
+  // there are only 5 phases for the sine curve
+  // they can be calculated outside the for loop since their values are constant per scroll
+  // and don't need to be evaluated over and again for each loop
+  var phases = [Math.sin(currentScrollTop + 0), Math.sin(currentScrollTop + 1),
+                  Math.sin(currentScrollTop + 2), Math.sin(currentScrollTop + 3),
+                  Math.sin(currentScrollTop + 4)];
+  for (var i = 0; i < items.length; i++) {
+      //var phase = Math.sin(currentScrollTop + k);
+      var move = (items[i].basicLeft + 100 * phases[k]) - window.innerWidth/2;
       items[i].style.transform = 'translateX(' + move + 'px)' ;
     if (k === 4) {
       k = 0;
@@ -530,6 +533,7 @@ function updatePositions() {
   }
 }
 
+
 // runs updatePositions on scroll
 window.addEventListener('scroll', updatePositions);
 
@@ -537,7 +541,10 @@ window.addEventListener('scroll', updatePositions);
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
-  for (var i = 0; i < 200; i++) {
+  // 22 background pizzas seem okay to fill the screen on a desktop
+  // and thus should be sufficient for smaller screen sizes
+  // hence capping the number of children generated at hard coded 22
+  for (var i = 0; i < 22; i++) {
     var elem = document.createElement('img');
     elem.className = 'mover';
     elem.src = "images/pizza.png";
