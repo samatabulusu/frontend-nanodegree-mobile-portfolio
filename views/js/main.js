@@ -406,13 +406,13 @@ var resizePizzas = function(size) {
   function changeSliderLabel(size) {
     switch(size) {
       case "1":
-        document.querySelector("#pizzaSize").innerHTML = "Small";
+        document.getElementById("pizzaSize").innerHTML = "Small";
         return;
       case "2":
-        document.querySelector("#pizzaSize").innerHTML = "Medium";
+        document.getElementById("pizzaSize").innerHTML = "Medium";
         return;
       case "3":
-        document.querySelector("#pizzaSize").innerHTML = "Large";
+        document.getElementById("pizzaSize").innerHTML = "Large";
         return;
       default:
         console.log("bug in changeSliderLabel");
@@ -448,12 +448,15 @@ var resizePizzas = function(size) {
     return dx;
   }
 
+  var pContainer = document.getElementsByClassName('randomPizzaContainer');
   // Iterates through pizza elements on the page and changes their widths
   function changePizzaSizes(size) {
-    for (var i = 0; i < document.querySelectorAll(".randomPizzaContainer").length; i++) {
-      var dx = determineDx(document.querySelectorAll(".randomPizzaContainer")[i], size);
-      var newwidth = (document.querySelectorAll(".randomPizzaContainer")[i].offsetWidth + dx) + 'px';
-      document.querySelectorAll(".randomPizzaContainer")[i].style.width = newwidth;
+    var ranPizzaContainer = document.getElementsByClassName("randomPizzaContainer");
+    var numPizzas = ranPizzaContainer.length;
+    for (var i = 0; i < numPizzas; i++) {
+      var dx = determineDx(ranPizzaContainer[i], size);
+      var newWidth = (ranPizzaContainer[i].offsetWidth + dx) + 'px';
+      pContainer[i].style.width = newWidth;
     }
   }
 
@@ -469,8 +472,8 @@ var resizePizzas = function(size) {
 window.performance.mark("mark_start_generating"); // collect timing data
 
 // This for-loop actually creates and appends all of the pizzas when the page loads
+var pizzasDiv = document.getElementById("randomPizzas");
 for (var i = 2; i < 100; i++) {
-  var pizzasDiv = document.getElementById("randomPizzas");
   pizzasDiv.appendChild(pizzaElementGenerator(i));
 }
 
@@ -519,7 +522,7 @@ function updatePositions() {
                   Math.sin(currentScrollTop + 2), Math.sin(currentScrollTop + 3),
                   Math.sin(currentScrollTop + 4)];
   for (var i = 0; i < items.length; i++) {
-      var move = (items[i].basicLeft + 100 * phases[k]) - window.innerWidth/2;
+      var move = (items[i].basicLeft + 100 * phases[i % 5]) - window.innerWidth/2;
       items[i].style.transform = 'translateX(' + move + 'px)';
     if (k === 4) {
       k = 0;
@@ -549,8 +552,9 @@ document.addEventListener('DOMContentLoaded', function() {
   // 22 background pizzas seem visually okay to fill the screen on a desktop
   // and thus should be sufficient for smaller screen sizes
   // hence capping the number of children generated at hard coded value of 22
+  var elem;
   for (var i = 0; i < 22; i++) {
-    var elem = document.createElement('img');
+    elem = document.createElement('img');
     elem.className = 'mover';
     elem.src = "images/pizza.png";
     elem.style.height = "100px";
