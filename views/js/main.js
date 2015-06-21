@@ -512,8 +512,6 @@ function updatePositions() {
   frame++;
   window.performance.mark("mark_start_frame");
 
-  // a counter to keep steady for 5 values
-  var k = 0;
   var currentScrollTop = document.body.scrollTop / 1250;
   // there are only 5 phases we care about in the sine curve
   // they can be calculated outside the for loop since their values are constant per scroll
@@ -524,11 +522,6 @@ function updatePositions() {
   for (var i = 0; i < items.length; i++) {
       var move = (items[i].basicLeft + 100 * phases[i % 5]) - window.innerWidth/2;
       items[i].style.transform = 'translateX(' + move + 'px)';
-    if (k === 4) {
-      k = 0;
-    } else {
-      k++;
-    }
   }
 
   // User Timing API to the rescue again. Seriously, it's worth learning.
