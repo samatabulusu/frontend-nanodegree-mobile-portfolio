@@ -1,3 +1,44 @@
+frontend-nanodegree-mobile-portifolio
+=====================================
+
+Objective 1: Achieve a PageSpeed score of 90 or higher on Google PageSpeed Insights for ../index.html
+============
+Refactored Solution:
+
+	1. Loaded google font apis asynchronously with javascript
+	2. Inlined style sheet in html using <style/> tag
+	3. Used media attribute for print style sheet and loaded it asynchronously
+	4. Load google analytics scripts asynchronously
+	5. Load the perfmatters javascript resource asynchronously
+	6. Created and used min versions of css and js files
+
+Conclusion: A pagespeed score of 95/100 for mobile and 97/100 for desktop was achieved
+
+Google PageSpeed can be tested at: https://developers.google.com/speed/pagespeed/insights/
+
+Project index.html url is published ready to be tested at: http://samatabulusu.github.io/frontend-nanodegree-mobile-portfolio/index.html
+
+
+Objective 2: Optimize Frames to 60FPS pizza.html
+===========
+Refactored Solution:
+
+	1. pizza.html uses min versions of css and js files
+	2. In main.js, function updatePositions was refactored with the following
+		a. Items variable was moved out of the function since it could be loaded just once as it had the same values elements) in its array
+		b. An i % 5 value was used in the sine value calculation. This had 5 constants per scroll being calculated     over and again. The values are now calculated outside the for loop and stored in an array. These constants are used in the loop with the help of a counter.
+		c. An item style to move left, is updated using the transform function
+	3. We did not need to generate 200 pizzas when the DOM was loaded. A visually appealing size of 22 is enough for a desktop. Since mobile devices have much smaller screen width and height, 22 should be safe.
+	4. Performance heavy querySelectorAll to find mover html element was replaced with getElementsByClassName
+	5. Performance heavy querySelector to find element by id - #movingPizzas1 was replaced with getElementById
+	6. All js and css files were minified and added to the project
+
+Conclusion: The page registers well better than 60FPS. The page is ready for testing using chrome developer tools at http://samatabulusu.github.io/frontend-nanodegree-mobile-portfolio/views/pizza.html
+
+
+Instructions for Project Completion as given by Udacity
+=======================================================
+
 ## Website Performance Optimization portfolio project
 
 Your challenge, if you wish to accept it (and we sure hope you will), is to optimize this online portfolio for speed! In particular, optimize the critical rendering path and make this page render as quickly as possible by applying the techniques you've picked up in the [Critical Rendering Path course](https://www.udacity.com/course/ud884).
@@ -32,7 +73,7 @@ Profile, optimize, measure... and then lather, rinse, and repeat. Good luck!
 
 ####Part 2: Optimize Frames per Second in pizza.html
 
-To optimize views/pizza.html, you will need to modify views/js/main.js until your frames per second rate is 60 fps or higher. You will find instructive comments in main.js. 
+To optimize views/pizza.html, you will need to modify views/js/main.js until your frames per second rate is 60 fps or higher. You will find instructive comments in main.js.
 
 You might find the FPS Counter/HUD Display useful in Chrome developer tools described here: [Chrome Dev Tools tips-and-tricks](https://developer.chrome.com/devtools/docs/tips-and-tricks).
 
