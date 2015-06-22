@@ -540,9 +540,6 @@ function updatePositions() {
 // runs updatePositions on scroll
 window.addEventListener('scroll', updatePositions);
 
-// redo the moving pizzas if the screen is resized
-window.addEventListener('resize', reMakeBackgroundPizzas);
-
 // make moving pizzas when the dom loads
 document.addEventListener('DOMContentLoaded', makeBackgroundPizzas);
 
@@ -572,20 +569,27 @@ function makeBackgroundPizzas() {
   updatePositions();
 }
 
-/* if the user, resizes the screen, especially desktop, clear the children
+// redo the moving pizzas if the screen is resized
+// uncomment following line when reMakeBackgroundPizzas is fixed
+// window.addEventListener('resize', reMakeBackgroundPizzas);
+
+
+/* TODO: If the user, resizes the screen, especially desktop, clear the children
    and make the pizzas again to accomodate for less or more as needed
-   TODO: There is a strange behavior (read bug :()) with more number of pizzas
-   appearing per row. The children do get all removed when console logged during
-   testing. Refresh will show how it should be vs how it is.
-   Any thoughts from coaches/reviewer is appreciated :) Thx, Samata      */
+
+   Any thoughts from coaches/reviewer is appreciated :) Thx, Samata
+   Following code throws this error. Submitting code, since review is not
+   blocking on this feature
+   Error: Uncaught TypeError: Failed to execute 'removeChild' on 'Node':
+   parameter 1 is not of type 'Node'.  */
 function reMakeBackgroundPizzas() {
   var children = movPizzas.getElementsByClassName('mover');
   var numChildren = children.length;
   // remove each child from parent 'movingPizzas1'
   for (var i = 0; i < numChildren; i++) {
-    movPizzas.removeChild(children[i]);
+      movPizzas.removeChild(children[i]);
   }
-  // make the correct number of pizzas for the resized screen
+  //make the correct number of pizzas for the resized screen
   makeBackgroundPizzas();
 }
 
