@@ -580,7 +580,7 @@ function makeBackgroundPizzas() {
    Any thoughts from coaches/reviewer is appreciated :) Thx, Samata      */
 function reMakeBackgroundPizzas() {
   var children = movPizzas.getElementsByClassName('mover');
-  var numChildren = m.length;
+  var numChildren = children.length;
   // remove each child from parent 'movingPizzas1'
   for (var i = 0; i < numChildren; i++) {
     movPizzas.removeChild(children[i]);
