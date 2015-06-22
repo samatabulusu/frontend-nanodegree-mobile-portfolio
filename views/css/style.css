@@ -10,7 +10,7 @@
 body {
   font-family: "Trebuchet MS", Helvetica, sans-serif;
   background: black;
-}
+  }
 
 input {
   background: grey;
@@ -33,6 +33,7 @@ form {
   position: fixed;
   width: 256px;
   z-index: -1;
+  backface-visibility: hidden;
 }
 
 .randomPizzaContainer {

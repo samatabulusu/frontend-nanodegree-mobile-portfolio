@@ -424,7 +424,7 @@ var resizePizzas = function(size) {
   // Returns the size difference to change a pizza element from one size to another. Called by changePizzaSlices(size).
   function determineDx (elem, size) {
     var oldwidth = elem.offsetWidth;
-    var windowwidth = document.querySelector("#randomPizzas").offsetWidth;
+    var windowwidth = document.getElementsByClassName("randomPizzas").offsetWidth;
     var oldsize = oldwidth / windowwidth;
 
     // TODO: change to 3 sizes? no more xl?
@@ -449,13 +449,15 @@ var resizePizzas = function(size) {
   }
 
   var pContainer = document.getElementsByClassName('randomPizzaContainer');
+  var ranPizzaContainer = document.getElementsByClassName("randomPizzaContainer");
   // Iterates through pizza elements on the page and changes their widths
   function changePizzaSizes(size) {
-    var ranPizzaContainer = document.getElementsByClassName("randomPizzaContainer");
     var numPizzas = ranPizzaContainer.length;
+    var dx;
+    var newWidth;
     for (var i = 0; i < numPizzas; i++) {
-      var dx = determineDx(ranPizzaContainer[i], size);
-      var newWidth = (ranPizzaContainer[i].offsetWidth + dx) + 'px';
+      dx = determineDx(ranPizzaContainer[i], size);
+      newWidth = (ranPizzaContainer[i].offsetWidth + dx) + 'px';
       pContainer[i].style.width = newWidth;
     }
   }
@@ -499,13 +501,12 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
 
 // The following code for sliding background pizzas was pulled from Ilya's demo found at:
 // https://www.igvita.com/slides/2012/devtools-tips-and-tricks/jank-demo.html
+
 // fetch all the elements loaded with initial DOM load by name of mover class
 // this array does not change and we can just evaluate it once
 // the contents of each item in the array are manipulated
 // to update the location of the pizza as the user scrolls
 var items = document.getElementsByClassName('mover');
-// The following code for sliding background pizzas was pulled from Ilya's demo found at:
-// https://www.igvita.com/slides/2012/devtools-tips-and-tricks/jank-demo.html
 
 // Moves the sliding background pizzas based on scroll position
 function updatePositions() {
@@ -519,8 +520,10 @@ function updatePositions() {
   var phases = [Math.sin(currentScrollTop + 0), Math.sin(currentScrollTop + 1),
                   Math.sin(currentScrollTop + 2), Math.sin(currentScrollTop + 3),
                   Math.sin(currentScrollTop + 4)];
-  for (var i = 0; i < items.length; i++) {
-      var move = (items[i].basicLeft + 100 * phases[i % 5]) - window.innerWidth/2;
+  var itemsLength = items.length;
+  var move;
+  for (var i = 0; i < itemsLength; i++) {
+      move = (items[i].basicLeft + 100 * phases[i % 5]) - window.innerWidth/2;
       items[i].style.transform = 'translateX(' + move + 'px)';
   }
 
@@ -534,19 +537,29 @@ function updatePositions() {
   }
 }
 
-
 // runs updatePositions on scroll
 window.addEventListener('scroll', updatePositions);
 
+// redo the moving pizzas if the screen is resized
+window.addEventListener('resize', reMakeBackgroundPizzas);
+
+// make moving pizzas when the dom loads
+document.addEventListener('DOMContentLoaded', makeBackgroundPizzas);
+
+// number of pizzas per row
+var cols = 8;
+// row width measure for pizza
+var s = 256;
+
+// grab the movingPizzas1 element
+var movPizzas = document.getElementById("movingPizzas1");
+
 // Generates the sliding pizzas when the page loads.
-document.addEventListener('DOMContentLoaded', function() {
-  var cols = 8;
-  var s = 256;
-  // 22 background pizzas seem visually okay to fill the screen on a desktop
-  // and thus should be sufficient for smaller screen sizes
-  // hence capping the number of children generated at hard coded value of 22
+function makeBackgroundPizzas() {
   var elem;
-  for (var i = 0; i < 22; i++) {
+  var numberOfPizzas = maxPizzasToGenerate();
+
+  for (var i = 0; i < numberOfPizzas; i++) {
     elem = document.createElement('img');
     elem.className = 'mover';
     elem.src = "images/pizza.png";
@@ -554,7 +567,32 @@ document.addEventListener('DOMContentLoaded', function() {
     elem.style.width = "73.333px";
     elem.basicLeft = (i % cols) * s;
     elem.style.top = (Math.floor(i / cols) * s) + 'px';
-    document.getElementById("movingPizzas1").appendChild(elem);
+    movPizzas.appendChild(elem);
   }
   updatePositions();
-});
+}
+
+/* if the user, resizes the screen, especially desktop, clear the children
+   and make the pizzas again to accomodate for less or more as needed
+   TODO: There is a strange behavior (read bug :()) with more number of pizzas
+   appearing per row. The children do get all removed when console logged during
+   testing. Refresh will show how it should be vs how it is.
+   Any thoughts from coaches/reviewer is appreciated :) Thx, Samata      */
+function reMakeBackgroundPizzas() {
+  var children = movPizzas.getElementsByClassName('mover');
+  var numChildren = m.length;
+  // remove each child from parent 'movingPizzas1'
+  for (var i = 0; i < numChildren; i++) {
+    movPizzas.removeChild(children[i]);
+  }
+  // make the correct number of pizzas for the resized screen
+  makeBackgroundPizzas();
+}
+
+/*  the number of moving pizzas generated depends on the screen size  */
+function maxPizzasToGenerate() {
+  var numRows = window.innerHeight/256;
+  return Math.ceil(numRows) * cols;;
+}
+
+
